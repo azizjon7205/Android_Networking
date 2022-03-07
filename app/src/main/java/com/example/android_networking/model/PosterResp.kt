@@ -3,7 +3,7 @@ package com.example.android_networking.model
 import com.google.gson.annotations.SerializedName
 
 data class PosterResp(
-    @SerializedName(value = "id")
+    @SerializedName("id")
     val id: Int = 0,
     @SerializedName(value = "userId")
     val userId: Int = 0,

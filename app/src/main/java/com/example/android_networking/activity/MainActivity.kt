@@ -58,13 +58,9 @@ class MainActivity : AppCompatActivity() {
             Alerts.createrDialog(this, null) {
                 apiPosterCreateByRetrofit(it)
             }
-//            dialogCreatePoster()
         }
 
         apiPosterListByRetrofit()
-
-//        apiPosterList()
-//        refreshAdapter(posters)
 
     }
 
@@ -78,12 +74,90 @@ class MainActivity : AppCompatActivity() {
         posterRespAdapter = PosterRespAdapter(this, posters, {
             apiPosterDeleteByRetrofit(it)
             posterRespAdapter.notifyDataSetChanged()
-        },{
-            apiPosterUpdateByRetrofit(it)
+        },{posterResps,  position ->
+            apiPosterUpdateByRetrofit(posterResps, position)
             posterRespAdapter.notifyDataSetChanged()
         })
         recyclerView.adapter = posterRespAdapter
     }
+
+    // with retrofit
+    fun apiPosterListByRetrofit() {
+        fr_loading.visibility = View.VISIBLE
+        RetrofitHttp.posterService.listPost().enqueue(object : Callback<ArrayList<PosterResp>> {
+            override fun onResponse(
+                call: Call<ArrayList<PosterResp>>,
+                response: Response<ArrayList<PosterResp>>,
+            ) {
+                fr_loading.visibility = View.INVISIBLE
+                response.body()?.let { refreshRespAdapter(it) }
+                Logger.d("@@@", response.body().toString())
+            }
+
+            override fun onFailure(call: Call<ArrayList<PosterResp>>, t: Throwable) {
+                Logger.d("@@@", t.message.toString())
+                fr_loading.visibility = View.INVISIBLE
+            }
+
+        })
+    }
+
+    fun apiPosterCreateByRetrofit(posterResp: PosterResp) {
+        fr_loading.visibility = View.VISIBLE
+        RetrofitHttp.posterService.createPost(posterResp).enqueue(object : Callback<PosterResp> {
+            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
+                fr_loading.visibility = View.INVISIBLE
+                posterRespAdapter.items.add(response.body()!!)
+                posterRespAdapter.notifyDataSetChanged()
+                Log.d("@@@", "Create -> ${response.body().toString()}")
+
+            }
+
+            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
+                fr_loading.visibility = View.INVISIBLE
+                Log.d("@@@", t.localizedMessage!!)
+            }
+
+        })
+    }
+
+    fun apiPosterDeleteByRetrofit(posterResp: PosterResp) {
+        fr_loading.visibility = View.VISIBLE
+        RetrofitHttp.posterService.deletePost(posterResp.id).enqueue(object : Callback<PosterResp> {
+            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
+                fr_loading.visibility = View.INVISIBLE
+                posterRespAdapter.items.remove(posterResp)
+                posterRespAdapter.notifyDataSetChanged()
+                Log.d("@@@", "Delete -> ${response.body().toString()}")
+            }
+
+            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
+                fr_loading.visibility = View.INVISIBLE
+                Log.d("@@@", t.localizedMessage!!)
+            }
+
+        })
+    }
+
+    fun apiPosterUpdateByRetrofit(posterResp: PosterResp, position: Int) {
+        fr_loading.visibility = View.VISIBLE
+        RetrofitHttp.posterService.updatePost(posterResp.id, posterResp).enqueue(object : Callback<PosterResp> {
+            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
+                fr_loading.visibility = View.INVISIBLE
+                posterRespAdapter.items[position] = posterResp
+                posterRespAdapter.notifyDataSetChanged()
+                Log.d("@@@", "Update -> ${response.body().toString()}")
+            }
+
+            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
+                fr_loading.visibility = View.INVISIBLE
+                Log.d("@@@", t.localizedMessage!!)
+            }
+
+        })
+    }
+
+//----------------------------------------------------------------------------------------------------------
 
     // with volley
     fun apiPosterList() {
@@ -139,81 +213,6 @@ class MainActivity : AppCompatActivity() {
                 }
 
             })
-    }
-
-    // with retrofit
-    fun apiPosterListByRetrofit() {
-        fr_loading.visibility = View.VISIBLE
-        RetrofitHttp.posterService.listPost().enqueue(object : Callback<ArrayList<PosterResp>> {
-            override fun onResponse(
-                call: Call<ArrayList<PosterResp>>,
-                response: Response<ArrayList<PosterResp>>,
-            ) {
-                fr_loading.visibility = View.INVISIBLE
-                response.body()?.let { refreshRespAdapter(it) }
-                Logger.d("@@@", response.body().toString())
-            }
-
-            override fun onFailure(call: Call<ArrayList<PosterResp>>, t: Throwable) {
-                Logger.d("@@@", t.message.toString())
-                fr_loading.visibility = View.INVISIBLE
-            }
-
-        })
-    }
-
-    fun apiPosterCreateByRetrofit(posterResp: PosterResp) {
-        fr_loading.visibility = View.VISIBLE
-        RetrofitHttp.posterService.createPost(posterResp).enqueue(object : Callback<PosterResp> {
-            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
-                fr_loading.visibility = View.INVISIBLE
-                posterRespAdapter.items.add(posterResp)
-                posterRespAdapter.notifyDataSetChanged()
-                Log.d("@@@", "Create -> ${response.body().toString()}")
-
-            }
-
-            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
-
-                fr_loading.visibility = View.INVISIBLE
-            }
-
-        })
-    }
-
-    fun apiPosterDeleteByRetrofit(posterResp: PosterResp) {
-        fr_loading.visibility = View.VISIBLE
-        RetrofitHttp.posterService.deletePost(posterResp.id).enqueue(object : Callback<PosterResp> {
-            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
-                fr_loading.visibility = View.INVISIBLE
-                posterRespAdapter.items.remove(posterResp)
-                posterRespAdapter.notifyDataSetChanged()
-                Log.d("@@@", "Delete -> ${response.body().toString()}")
-            }
-
-            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
-                fr_loading.visibility = View.INVISIBLE
-                Log.d("@@@", t.localizedMessage)
-            }
-
-        })
-    }
-
-    fun apiPosterUpdateByRetrofit(posterResp: PosterResp) {
-        fr_loading.visibility = View.VISIBLE
-        RetrofitHttp.posterService.updatePost(posterResp.id, posterResp).enqueue(object : Callback<PosterResp> {
-            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
-                fr_loading.visibility = View.INVISIBLE
-                posterRespAdapter.notifyDataSetChanged()
-                Log.d("@@@", "Update -> ${response.body().toString()}")
-            }
-
-            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
-                fr_loading.visibility = View.INVISIBLE
-                Log.d("@@@", t.localizedMessage)
-            }
-
-        })
     }
 
     fun workWithRetrofit() {
