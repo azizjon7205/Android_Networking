@@ -8,22 +8,22 @@ import retrofit2.http.*
 //@JvmSuppressWildcards
 interface PosterService {
 
-    @Headers(
-        "Content-type:application/json"
-    )
+//    @Headers(
+//        "Content-type:application/json"
+//    )
 
     @GET("posts")
     fun listPost(): Call<ArrayList<PosterResp>>
 
     @GET("posts/{id}")
-    fun singlePost(@Path("id") id: Int): Call<PosterResp>
+    fun singlePost(@Path("id") id: String): Call<PosterResp>
 
     @POST("posts")
     fun createPost(@Body post: PosterResp): Call<PosterResp>
 
     @PUT("posts/{id}")
-    fun updatePost(@Path("id") id: Int, @Body post: PosterResp): Call<PosterResp>
+    fun updatePost(@Path("id") id: String, @Body post: PosterResp): Call<PosterResp>
 
     @DELETE("posts/{id}")
-    fun deletePost(@Path("id") id: Int): Call<PosterResp>
+    fun deletePost(@Path("id") id: String): Call<PosterResp>
 }

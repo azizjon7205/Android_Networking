@@ -69,6 +69,4 @@
             android:src="@drawable/ic_edit" />
     </LinearLayout>
 
-
-
 </ru.rambler.libs.swipe_layout.SwipeLayout>

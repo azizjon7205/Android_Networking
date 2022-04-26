@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class PosterResp(
     @SerializedName("id")
-    val id: Int = 0,
+    val id: String? = null,
     @SerializedName(value = "userId")
     val userId: Int = 0,
     @SerializedName(value = "title")

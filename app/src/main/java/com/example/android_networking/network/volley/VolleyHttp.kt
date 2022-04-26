@@ -57,9 +57,9 @@ class VolleyHttp {
                     Logger.d(TAG, error.toString())
                     volleyHandler.onError(error.toString())
                 }) {
-//                override fun getHeaders(): MutableMap<String, String> {
-//                    return headers()
-//                }
+                override fun getHeaders(): MutableMap<String, String> {
+                    return headers()
+                }
 
                 override fun getBody(): ByteArray {
                     return JSONObject(body as Map<*, *>).toString().toByteArray()

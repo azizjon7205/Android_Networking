@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var posterAdapter: PosterAdapter
     private lateinit var posterRespAdapter: PosterRespAdapter
     val posters = ArrayList<Poster>()
-    val posterResps = ArrayList<PosterResp>()
 
     private lateinit var fr_loading: FrameLayout
     private lateinit var pr_loading: ProgressBar
@@ -51,7 +50,6 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView = findViewById(R.id.rv_main)
         recyclerView.layoutManager = GridLayoutManager(this, 1)
-
 
         val b_floating: FloatingActionButton = findViewById(R.id.b_floating)
         b_floating.setOnClickListener {
@@ -73,10 +71,8 @@ class MainActivity : AppCompatActivity() {
     fun refreshRespAdapter(posters: ArrayList<PosterResp>) {
         posterRespAdapter = PosterRespAdapter(this, posters, {
             apiPosterDeleteByRetrofit(it)
-            posterRespAdapter.notifyDataSetChanged()
         },{posterResps,  position ->
             apiPosterUpdateByRetrofit(posterResps, position)
-            posterRespAdapter.notifyDataSetChanged()
         })
         recyclerView.adapter = posterRespAdapter
     }
@@ -123,7 +119,7 @@ class MainActivity : AppCompatActivity() {
 
     fun apiPosterDeleteByRetrofit(posterResp: PosterResp) {
         fr_loading.visibility = View.VISIBLE
-        RetrofitHttp.posterService.deletePost(posterResp.id).enqueue(object : Callback<PosterResp> {
+        RetrofitHttp.posterService.deletePost(posterResp.id!!).enqueue(object : Callback<PosterResp> {
             override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
                 fr_loading.visibility = View.INVISIBLE
                 posterRespAdapter.items.remove(posterResp)
@@ -141,7 +137,7 @@ class MainActivity : AppCompatActivity() {
 
     fun apiPosterUpdateByRetrofit(posterResp: PosterResp, position: Int) {
         fr_loading.visibility = View.VISIBLE
-        RetrofitHttp.posterService.updatePost(posterResp.id, posterResp).enqueue(object : Callback<PosterResp> {
+        RetrofitHttp.posterService.updatePost(posterResp.id!!, posterResp).enqueue(object : Callback<PosterResp> {
             override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
                 fr_loading.visibility = View.INVISIBLE
                 posterRespAdapter.items[position] = posterResp
@@ -254,15 +250,15 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            })
 
-        RetrofitHttp.posterService.deletePost(poster.id).enqueue(object : Callback<PosterResp> {
-            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
-                Logger.d("@@@", "" + response.body())
-            }
-
-            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
-                Logger.d("@@@", "" + t.message)
-            }
-        })
+//        RetrofitHttp.posterService.deletePost(poster.id).enqueue(object : Callback<PosterResp> {
+//            override fun onResponse(call: Call<PosterResp>, response: Response<PosterResp>) {
+//                Logger.d("@@@", "" + response.body())
+//            }
+//
+//            override fun onFailure(call: Call<PosterResp>, t: Throwable) {
+//                Logger.d("@@@", "" + t.message)
+//            }
+//        })
     }
 
     fun workWithVolley() {

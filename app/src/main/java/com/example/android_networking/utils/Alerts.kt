@@ -63,7 +63,7 @@ class Alerts {
 //                val poster = Poster(1, userId.toInt(), title, body)
 //                apiPosterCreate(poster)
 
-                    val posterResp1 = PosterResp(posterResp?.id ?: 1, userId.toInt(), title, body)
+                    val posterResp1 = PosterResp(userId = userId.toInt(), title = title, body = body)
                     createPoster.invoke(posterResp1)
 
                 } else {

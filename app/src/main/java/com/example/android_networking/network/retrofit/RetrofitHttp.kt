@@ -5,9 +5,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitHttp {
-    val IS_TESTER = true
+    val IS_TESTER = false
     val SERVER_DEVELOPMENT = "https://jsonplaceholder.typicode.com/"
-    val SERVER_PRODUCTION = "https://6221f0e6666291106a17fe42.mockapi.io/"
+    val SERVER_PRODUCTION = "http://10.0.2.2:8080/"
+//    val SERVER_PRODUCTION = "https://6221f0e6666291106a17fe42.mockapi.io/"
 
     val retrofit = Retrofit.Builder()
         .baseUrl(server())
